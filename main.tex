@@ -36,6 +36,8 @@
 \DeclareMathOperator{\argmax}{argmax}
 \DeclareMathOperator{\kl}{KL}
 \DeclareMathOperator{\data}{data}
+\DeclareMathOperator{\id}{Id}
+
 
 \begin{document}
 
@@ -51,14 +53,58 @@ Likelihood maximization is an instance of generative modeling: given data points
 &= \argmax_{\theta\in \Theta} \frac 1N \sum_{i=1}^N \log f_\theta(x_i)
 \end{aligned}$
 \\\\\\
-A weakness of likelihood maximization is its poor scalability to high-dimensional settings, which are commonplace. For instance, $100\times 100$ images with 3 channels live in $\mathbb R^{30.000}$. Instead of working directly in the data space $\mathbb R^d$, we may rather consider a latent space $(\mathbb R^p, \mathcal B(\mathbb R^p), \mu)$ with $p\ll d$, and measurable functions $g_\theta:\mathbb R^p\to \mathbb R^d$ (e.g deconvolution networks). We define the pushforward measure $g_{\theta \sharp}\mu$ by $\forall B\in \mathcal B(\mathbb R^d), g_{\theta \sharp}\mu(B) := \mu(g_{\theta} \in B)$ and we look for $\theta$ such that $g_{\theta \sharp}\mu$ matches $\nu_{\data}$. This requires setting a metric on the space of probability measures, and fortunately, many exist: Hellinger, Kantorovitch, MMD, Wasserstein. Some of these metrics arise from the theory of optimal transport.
+A weakness of likelihood maximization is its poor scalability to high-dimensional settings, which are commonplace. For instance, a $100\times 100$ image with 3 color channels lives in $\mathbb R^{30.000}$. Instead of working directly in the data space $\mathbb R^d$, we may rather consider a latent space $(\mathbb R^p, \mathcal B(\mathbb R^p), \mu)$ with $p\ll d$, and measurable functions $g_\theta:\mathbb R^p\to \mathbb R^d$ (e.g deconvolution networks). We define the pushforward measure $g_{\theta \sharp}\mu$ by $\forall B\in \mathcal B(\mathbb R^d), g_{\theta \sharp}\mu(B) := \mu(g_{\theta} \in B)$ and we look for $\theta$ such that $g_{\theta \sharp}\mu$ matches $\nu_{\data}$. This requires setting a metric on the space of probability measures, and fortunately, many exist: Hellinger, Kantorovitch, MMD, Wasserstein... Some of these metrics arise from the theory of optimal transport.
 
 \section{Optimal transport}
 
+\subsection{Monge problem and its Kantorovitch relaxation}
 
+Let $\mu$ and $\nu$ be probability measures on $(\mathbb R^d, \mathcal B(\mathbb R^d))$ and $c:\mathbb R^d\times \mathbb R^d\to \mathbb R_+$ a cost function. Monge's optimal transportation problem is the following:
+\begin{equation}\tag{MP}
+\inf_{\substack{T \text{ measurable}\\ T_\sharp \mu = \nu}} \int c(x,T(x)) d\mu(x) 
+\end{equation}
 
+In words, $T$ is a transportation mapping that assigns to each $x$ exactly one location $T(x)$, implying that the mass at $x$ cannot be split to several locations. $T_\sharp \mu = \nu$ is the transportation constraint, and the objective $\int c(x,T(x)) d\mu(x) $ measures the total transportation cost.
+\\ \\
+The Kantorovitch relaxation allows for mass splitting by considering couplings. A probability measure $P$ on $\mathbb R^d \times \mathbb R^d$ is said to be a coupling of $(\mu,\nu)$ if for any $A,B \in \mathcal B(\mathbb R^d), P(A\times \mathbb R^d) = \mu(A)$ and $P(\mathbb R^d\times B) = \nu(B)$. Let $\Pi(\mu, \nu)$ denote the set of such couplings. $\Pi(\mu, \nu)$ is clearly non-empty since it contains the product measure $\mu \otimes \nu$.\\
+Kantorovitch's optimal transportation problem is the following:
+\begin{equation}\tag{KP-primal}
+\inf_{P\in \Pi(\mu, \nu)} \int\int c(x,y) dP(x,y)
+\end{equation}
 
+It is important to note that (KP-primal) provides a lower bound for (MP). Indeed, if $T$ verifies $T_\sharp \mu = \nu$ and we let $P=(\id,T)_{\sharp}\mu$, it is easy to check that $P$ is a coupling. A theorem of integration with respect to pushforward measures yields $\int \int c(x,y) dP(x,y) = \int c\circ (\id,T)(x) d\mu(x) = \int c(x,T(x)) d\mu(x)$, hence the claim. %add reference to later connection ?
+\\ 
+\\
+The dual of (KP-primal) is defined as follows:
+\begin{equation}\tag{KP-dual}
+\sup_{\substack{\varphi \in L_1(\mu)\\ \psi \in L_1(\nu)\\ \forall (x,y), \;\varphi(x)+\psi(y)\leq c(x,y)}} \int \varphi d\mu + \int \psi d\nu
+\end{equation}
 
+\begin{thm}
+If $c$ is lower semi-continuous, then (KP-primal) and (KP-dual) share the same optimal value. Moreover, the infimum in (KP-primal) is attained.
+\end{thm}
 
+\begin{proof}
+We give a partial proof of the first part of the theorem. Let $\varphi\oplus \psi:(x,y) \mapsto \varphi(x)+\psi(x)$ and $$\iota_\Pi(P) := \sup_{\substack{\varphi \in L_1(\mu)\\ \psi \in L_1(\nu)}} \int \varphi d\mu + \int \psi d\nu - \int \varphi\oplus \psi dP$$
+Let $P\in \Pi(\mu, \nu)$. If we let $\pi_1$ and $\pi_2$ denote the projections respectively on the first and last $d$ coordinates, then $\int \varphi\oplus \psi dP = \int \varphi \circ \pi_1 dP + \int \psi \circ \pi_2 dP$. For $\varphi = 1_A$, $$\int \varphi \circ \pi_1 dP = \int 1_{\pi_1^{-1}(A)} dP = P(\pi_1^{-1}(A)) = P(A\times \mathbb R^d) = \mu(A)$$
+Therefore $\int \varphi d\mu + \int \psi d\nu - \int \varphi\oplus \psi dP = 0$ when $\varphi$ and $\psi$ are indicators, and a standard limit argument shows that it remains $0$ for arbitrary integrable $\varphi$ and $\psi$. Thus $\iota_\Pi(P)=0$ when $P$ is a coupling.\\
+If $P\notin \Pi(\mu, \nu)$, WLOG there exists some $A\in \mathcal B(\mathbb R^d)$ such that $P(A\times \mathbb R^d)\neq \mu(A)$. If $P(A\times \mathbb R^d)< \mu(A)$, consider $\varphi = \lambda 1_A$ with $\lambda >0$ and $\psi = 0$. Then $$\int \varphi d\mu + \int \psi d\nu - \int \varphi\oplus \psi dP = \lambda (\mu(A) - P(A\times \mathbb R^d)) \xrightarrow[\lambda \to \infty]{} \infty$$ Hence $\iota_\Pi(P)=\infty$. The other case is similar.\\
+\\
+If we let $\mathcal M^+$ denote the set of positive measures on $\mathbb R^d\times \mathbb R^d$, then (KP-primal) turns into 
+$$\begin{aligned}
+	\inf_{P\in \mathcal M^+} \int\int c\; dP +  \iota_\Pi(P) 
+	&= \inf_{P\in \mathcal M^+} \sup_{\substack{\varphi \in L_1(\mu)\\ \psi \in L_1(\nu)}}  \int c\; dP + \int \varphi d\mu + \int \psi d\nu - \int \varphi\oplus \psi dP \\
+	&= \inf_{P\in \mathcal M^+} \sup_{\substack{\varphi \in L_1(\mu)\\ \psi \in L_1(\nu)}}  \int c - \varphi\oplus \psi\; dP + \int \varphi d\mu + \int \psi d\nu \\
+	&= \sup_{\substack{\varphi \in L_1(\mu)\\ \psi \in L_1(\nu)}} \inf_{P\in \mathcal M^+}   \left[\int c - \varphi\oplus \psi\; dP\right] + \int \varphi d\mu + \int \psi d\nu
+\end{aligned}$$
+Switching the $\inf$ and the $\sup$ is the technical hurdle of the proof. In \cite{villani2003topics} Villani provides a rigorous justification that is quite technical. \\
+Next, $\inf_{P\in \mathcal M^+}   \int c - \varphi\oplus \psi\; dP$ can be rewritten more simply. If $c - \varphi\oplus \psi \geq 0$, $0$ is a lower bound for the integral, and it is attained for $P=0$. Hence $c - \varphi\oplus \psi \geq 0 \implies \inf_{P\in \mathcal M^+}   \int c - \varphi\oplus \psi\; dP = 0$. Otherwise, if there exists $(x_0,y_0)$ such that $c(x_0,y_0) - \varphi\oplus \psi(x_0,y_0) <0$, consider $P=\lambda \delta_{(x_0,y_0)}$ and let $\lambda \to \infty$ to get $\inf_{P\in \mathcal M^+}   \int c - \varphi\oplus \psi\; dP = -\infty$.\\
+Thus (KP-primal) can be written as $$\sup_{\substack{\varphi \in L_1(\mu)\\ \psi \in L_1(\nu)\\ \varphi \oplus \psi \leq c}} \int \varphi d\mu + \int \psi d\nu$$
+which is exactly (KP-dual).
+\end{proof}
+
+\newpage
+\bibliographystyle{unsrt}
+\bibliography{bibli}
 
 \end{document}
