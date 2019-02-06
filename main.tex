@@ -97,11 +97,53 @@ $$\begin{aligned}
 	&= \inf_{P\in \mathcal M^+} \sup_{\substack{\varphi \in L_1(\mu)\\ \psi \in L_1(\nu)}}  \int c - \varphi\oplus \psi\; dP + \int \varphi d\mu + \int \psi d\nu \\
 	&= \sup_{\substack{\varphi \in L_1(\mu)\\ \psi \in L_1(\nu)}} \inf_{P\in \mathcal M^+}   \left[\int c - \varphi\oplus \psi\; dP\right] + \int \varphi d\mu + \int \psi d\nu
 \end{aligned}$$
-Switching the $\inf$ and the $\sup$ is the technical hurdle of the proof. In \cite{villani2003topics} Villani provides a rigorous justification that is quite technical. \\
+Switching the $\inf$ and the $\sup$ is the technical hurdle of the proof. In \cite{villani2003topics} Villani provides a rigorous justification that is quite involved. \\
 Next, $\inf_{P\in \mathcal M^+}   \int c - \varphi\oplus \psi\; dP$ can be rewritten more simply. If $c - \varphi\oplus \psi \geq 0$, $0$ is a lower bound for the integral, and it is attained for $P=0$. Hence $c - \varphi\oplus \psi \geq 0 \implies \inf_{P\in \mathcal M^+}   \int c - \varphi\oplus \psi\; dP = 0$. Otherwise, if there exists $(x_0,y_0)$ such that $c(x_0,y_0) - \varphi\oplus \psi(x_0,y_0) <0$, consider $P=\lambda \delta_{(x_0,y_0)}$ and let $\lambda \to \infty$ to get $\inf_{P\in \mathcal M^+}   \int c - \varphi\oplus \psi\; dP = -\infty$.\\
 Thus (KP-primal) can be written as $$\sup_{\substack{\varphi \in L_1(\mu)\\ \psi \in L_1(\nu)\\ \varphi \oplus \psi \leq c}} \int \varphi d\mu + \int \psi d\nu$$
 which is exactly (KP-dual).
 \end{proof}
+
+\subsection{$c$-transforms}
+
+The constraint in (KP-dual) rewrites as $\forall x,y \in \mathbb R^d, \psi(y)\leq c(x,y) - \varphi(x)$ or equivalently \newline $\forall y,\; \psi(y) \leq \inf_x [c(x,y) - \varphi(x)]$. This motivates the definition of the $c$-transform of $\varphi$ as $$\varphi^c(y):= \inf_x  c(x,y) - \varphi(x)$$ and the the $c$-transform of $\psi$ as $$\psi^c(y):= \inf_y  c(x,y) - \psi(y)$$ However, $\varphi^c$ and $\psi^c$ may not be integrable without additional hypotheses on $c$, so we assume as in Exercise 2.36 of \cite{villani2003topics} that there exist $c_X\in L_1(\mu)$ and $c_Y\in L_1(\nu)$ such that $\forall x,y \in \mathbb R^d, c(x,y)\leq c_X(x) + c_Y(y)$. With this assumption it is easily checked that $\varphi^c$ is $\nu$-integrable and the pair $(\varphi, \varphi^c)$ increases the objective function. The same argument applies to $(\varphi^{cc}, \varphi^c)$, so (KP-dual) rewrites as 
+\begin{equation}\tag{KP-dual 2}
+\sup_{\varphi \in L_1(\mu)} \int \varphi d\mu + \int \varphi^c d\nu
+\end{equation}
+and 
+\begin{equation}\tag{KP-dual 3}
+\sup_{\varphi \in L_1(\mu)} \int \varphi^{cc} d\mu + \int \varphi^c d\nu
+\end{equation}
+\\ \\
+It is important to note that $\varphi^{ccc}=\varphi^c$. 
+\begin{proof}
+Note that $\varphi\leq \varphi^{cc}$. Indeed for $x,y\in \mathbb R^d$, $$\begin{aligned}
+\varphi^c(y) &\leq c(x,y) - \varphi(x)\\
+\implies \varphi(x) &\leq c(x,y) - \varphi^c(y) \quad \forall y\\
+\implies \varphi(x) &\leq \inf _y c(x,y) - \varphi^c(y)\\
+\implies \varphi(x) &\leq \varphi^{cc}(x)
+\end{aligned}$$
+Next, for $x,y\in \mathbb R^d$,
+$$\begin{aligned}
+\varphi^{ccc}(y) &\leq c(x,y) - \varphi^{cc}(x)\\
+\implies \varphi^{ccc}(y) &\leq c(x,y) - \varphi(x) \quad \forall x\\
+\implies \varphi^{ccc}(y) &\leq \inf_x c(x,y) - \varphi(x)\\
+\implies \varphi^{ccc}(y) &\leq \varphi^c(y)
+\end{aligned}$$
+and 
+$$\begin{aligned}
+\varphi^{cc}(x) &\leq c(x,y) - \varphi^{c}(y)\\
+\implies \varphi^{c}(y) &\leq c(x,y) - \varphi^{cc}(x) \quad \forall x\\
+\implies \varphi^{c}(y) &\leq \inf x c(x,y) - \varphi^{cc}(x)\\
+\implies \varphi^{c}(y) &\leq \varphi^{ccc}(y)
+\end{aligned}$$
+\end{proof}
+
+Besides, $\varphi$ is said to be $c$-concave if $\varphi^{cc}=\varphi$. In \cite{villani2003topics}, Villani states that (KP-dual) is solved by a pair $(\varphi, \varphi^c)$ where $\varphi$ is $c$-concave. As a result, (KP-dual) may be also rewritten as 
+\begin{equation}\tag{KP-dual 2}
+\sup_{\substack{\varphi \in L_1(\mu)\\ \varphi\; c-\text{concave}}} \int \varphi d\mu + \int \varphi^c d\nu
+\end{equation}
+
+\subsection{Wasserstein distances}
 
 \newpage
 \bibliographystyle{unsrt}
