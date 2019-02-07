@@ -37,7 +37,7 @@
 \DeclareMathOperator{\kl}{KL}
 \DeclareMathOperator{\data}{data}
 \DeclareMathOperator{\id}{Id}
-
+\DeclareMathOperator{\lip}{Lip}
 
 \begin{document}
 
@@ -85,7 +85,7 @@ If $c$ is lower semi-continuous, then (KP-primal) and (KP-dual) share the same o
 \end{thm}
 
 \begin{proof}
-We give a partial proof of the first part of the theorem. Let $\varphi\oplus \psi:(x,y) \mapsto \varphi(x)+\psi(x)$ and $$\iota_\Pi(P) := \sup_{\substack{\varphi \in L_1(\mu)\\ \psi \in L_1(\nu)}} \int \varphi d\mu + \int \psi d\nu - \int \varphi\oplus \psi dP$$
+We give a partial proof of the first part of the theorem. Let $\varphi\oplus \psi:(x,y) \mapsto \varphi(x)+\psi(y)$ and $$\iota_\Pi(P) := \sup_{\substack{\varphi \in L_1(\mu)\\ \psi \in L_1(\nu)}} \int \varphi d\mu + \int \psi d\nu - \int \varphi\oplus \psi dP$$
 Let $P\in \Pi(\mu, \nu)$. If we let $\pi_1$ and $\pi_2$ denote the projections respectively on the first and last $d$ coordinates, then $\int \varphi\oplus \psi dP = \int \varphi \circ \pi_1 dP + \int \psi \circ \pi_2 dP$. For $\varphi = 1_A$, $$\int \varphi \circ \pi_1 dP = \int 1_{\pi_1^{-1}(A)} dP = P(\pi_1^{-1}(A)) = P(A\times \mathbb R^d) = \mu(A)$$
 Therefore $\int \varphi d\mu + \int \psi d\nu - \int \varphi\oplus \psi dP = 0$ when $\varphi$ and $\psi$ are indicators, and a standard limit argument shows that it remains $0$ for arbitrary integrable $\varphi$ and $\psi$. Thus $\iota_\Pi(P)=0$ when $P$ is a coupling.\\
 If $P\notin \Pi(\mu, \nu)$, WLOG there exists some $A\in \mathcal B(\mathbb R^d)$ such that $P(A\times \mathbb R^d)\neq \mu(A)$. If $P(A\times \mathbb R^d)< \mu(A)$, consider $\varphi = \lambda 1_A$ with $\lambda >0$ and $\psi = 0$. Then $$\int \varphi d\mu + \int \psi d\nu - \int \varphi\oplus \psi dP = \lambda (\mu(A) - P(A\times \mathbb R^d)) \xrightarrow[\lambda \to \infty]{} \infty$$ Hence $\iota_\Pi(P)=\infty$. The other case is similar.\\
@@ -139,13 +139,48 @@ $$\begin{aligned}
 \end{proof}
 
 Besides, $\varphi$ is said to be $c$-concave if $\varphi^{cc}=\varphi$. In \cite{villani2003topics}, Villani states that (KP-dual) is solved by a pair $(\varphi, \varphi^c)$ where $\varphi$ is $c$-concave. As a result, (KP-dual) may be also rewritten as 
-\begin{equation}\tag{KP-dual 2}
+\begin{equation}\tag{KP-dual 4}
 \sup_{\substack{\varphi \in L_1(\mu)\\ \varphi\; c-\text{concave}}} \int \varphi d\mu + \int \varphi^c d\nu
 \end{equation}
 
 \subsection{Wasserstein distances}
 
-\newpage
+The Wasserstein distance creates a metric on the space of probability measures from a metric on the data space. Instead of $\mathbb R^d$, let us consider a separable complete metric space $(X,D)$ with the cost function $c(x,y) = D(x,y)^p$ where $p\geq 1$:
+$$W_p(\mu, \nu) := \left(\inf_{P\in \Pi(\mu, \nu)} \int\int D(x,y)^p dP(x,y) \right)^{1/p}$$
+It is shown in \cite{villani2003topics} that $W_p$ is a metric on the space $\mathcal W_p(X)$ of probability measures with finite moments of order $p$, i.e. such that there exists $x_0$ with $\int D(x_0,x)^p d\mu(x) <\infty$. Note that $\mathcal W_p(X)$ is the set of all probability measures when $D$ is bounded (which happens when $X$ is bounded for example).
+
+The choice of $p$ is of much importance in practice. While $p=2$ is easier to deal with computationally, $p=1$ yields special properties.
+\begin{prop}
+If $c$ is a distance, then $\varphi$ is $c$-concave iff $\lip \varphi \leq 1$. Moreover, $\lip \varphi \leq 1 \implies \varphi^c = -\varphi$.
+\end{prop}
+
+\begin{proof}
+$\implies$ Let us prove the following lemma: if $f,g:X \to \mathbb R$ are bounded below, then\newline $|\inf f -\inf g|\leq \sup |f-g|$. Indeed for any $x\in X$, $\inf f - \sup |f-g| \leq f(x) - |f(x)-g(x)|\leq g(x)$, hence $\inf g \geq \inf f - \sup |f-g|$ and $\inf f - \inf g \leq \sup|f-g|$. Switching $f$ with $g$ finishes the proof.\\
+Since $\varphi$ is $c$-concave, $\varphi^{cc}=\varphi$, hence $$\begin{aligned}|\varphi(x)-\varphi(y)| &= |\inf_z [D(x,z)-\varphi^{c}(z)]-\inf_z [D(y,z)-\varphi^{c}(z)]|\\
+&\leq \sup_z |D(x,z) - D(y,z)|\\ &\leq D(x,y)\\
+\end{aligned}$$	
+$\Longleftarrow$ If $\lip \varphi \leq 1$, for all $x,y\in X$, 
+$$\begin{aligned}
+\varphi(y)-\varphi(x)&\leq D(x,y)\\
+\implies \varphi(y) &\leq D(x,y) + \varphi(x) \quad \forall x \\
+\implies \varphi(y) &\leq \inf_x D(x,y)+\varphi(x)\\
+\implies (-\varphi)^c(y) \geq \varphi(y)
+\end{aligned}$$
+Next, note that $(-\varphi)^c(y)\leq D(y,y) + \varphi(y) = \varphi(y)$, hence $(-\varphi)^c = \varphi$ and $\varphi$ is $c$-concave.\\
+Moreover, 
+$$\begin{aligned}
+\varphi(z)-\varphi(x)&\leq D(z,x)\\
+\implies -\varphi(x) &\leq D(z,x) - \varphi(z) \quad \forall z \\
+\implies -\varphi(x) &\leq \inf_z D(z,x) - \varphi(z)\\
+\implies -\varphi(x) &\leq \varphi^c(x)
+\end{aligned}$$
+Finally, $\varphi^c(x)\leq D(x,x) - \varphi(x) = -\varphi(x)$, hence $\varphi^c = -\varphi$.
+\end{proof}
+\hfill \\\\
+This result relates $W_1$ to integral probability metrics since (KP-Dual 4) turns into $$W_1(\mu,\nu) = \sup_{\varphi \; 1-\lip} \int \varphi d\mu - \int \varphi d\nu$$ 
+
+
+ \newpage
 \bibliographystyle{unsrt}
 \bibliography{bibli}
 
