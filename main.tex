@@ -19,11 +19,12 @@
  top=20mm,
  }
 \setlength{\parindent}{0pt}
+\theoremstyle{definition}
 \newtheorem{thm}{Theorem}[section]
 \newtheorem{corol}{Corollary}[section]
 \newtheorem{lemme}{Lemma}[section]
 \newtheorem{prop}{Proposition}[section]
-\theoremstyle{definition}
+
 \newtheorem{defi}{Definition}[section]
 \theoremstyle{remark}
 \newtheorem{rem}{Remark}
@@ -142,6 +143,26 @@ Besides, $\varphi$ is said to be $c$-concave if $\varphi^{cc}=\varphi$. In \cite
 \begin{equation}\tag{KP-dual 4}
 \sup_{\substack{\varphi \in L_1(\mu)\\ \varphi\; c-\text{concave}}} \int \varphi d\mu + \int \varphi^c d\nu
 \end{equation}
+\\
+\\
+The following result provides conditions under which the gap between Monge problem and its relaxation is $0$.
+\begin{thm}
+Let $\|\cdot\|$ a norm on $\mathbb R^d$ and $h:\mathbb R^d\to \mathbb R$ a strictly convex and superlinear function (meaning that $\frac{h(z)}{\|z\|}\xrightarrow[\|z\|\to \infty]{} \infty$ and Assumption (H2) of \cite{gangbo1996geometry} holds). Let $c:(x,y)\mapsto h(x-y)$ and assume that $\mu$ is absolutely continuous with respect to Lebesgue measure.
+Then there is a unique solution to (KP-primal) and it has the form $(\id,T)_\sharp \mu$ where $T$ is uniquely defined $\mu$-almost everywhere by 
+$$\begin{cases}
+T_\sharp \mu = \nu\\
+\exists \varphi \;c-\text{concave} \;/ T = \id - \nabla h^* \circ \nabla \varphi
+\end{cases}$$
+\end{thm}
+\hfill
+\\
+\begin{rem}\hfill\\
+$\bullet$ $h^*$ denotes the Legendre transform of $h$. Since $\varphi$ is $c$-concave, it is locally Lipschitz (see Proposition 2.43 in \cite{villani2003topics}) hence differentiable almost-everywhere (Rademacher's theorem), so its gradient makes sense.\\
+$\bullet$ We proved earlier that (KP-primal) provides a lower bound for (MP). Given the form of the solution, it is clear that $T$ solves (MP) and that (MP) and (KP-dual) share the same optimal value.\\
+$\bullet$ Any $h:z\mapsto \|z\|_p^p$ with $p>1$ satisfies the conditions of the theorem.\\
+$\bullet$ With $h:z\mapsto \frac 12 \|z\|^2$, $T(x) = x - \nabla \varphi(x)=\nabla(\frac 12 \|\cdot\|_2^2 - \varphi)$. In this case, $h\in \mathcal C_{\text{loc}}^{1,1}(\mathbb R^d)$, hence $\varphi$ is semi-concave (Proposition 2.43 in \cite{villani2003topics}) and under condition (iii) of Lemma 2.42 in \cite{villani2003topics}, $\frac 12 \|\cdot\|_2^2 - \varphi$ is convex, and we have therefore recovered Brenier's theorem.
+\end{rem}
+
 
 \subsection{Wasserstein distances}
 
