@@ -160,7 +160,7 @@ T_\sharp \mu = \nu\\
 $\bullet$ $h^*$ denotes the Legendre transform of $h$. Since $\varphi$ is $c$-concave, it is locally Lipschitz (see Proposition 2.43 in \cite{villani2003topics}) hence differentiable almost-everywhere (Rademacher's theorem), so its gradient makes sense.\\
 $\bullet$ We proved earlier that (KP-primal) provides a lower bound for (MP). Given the form of the solution, it is clear that $T$ solves (MP) and that (MP) and (KP-dual) share the same optimal value.\\
 $\bullet$ Any $h:z\mapsto \|z\|_p^p$ with $p>1$ satisfies the conditions of the theorem.\\
-$\bullet$ With $h:z\mapsto \frac 12 \|z\|^2$, $T(x) = x - \nabla \varphi(x)=\nabla(\frac 12 \|\cdot\|_2^2 - \varphi)$. In this case, $h\in \mathcal C_{\text{loc}}^{1,1}(\mathbb R^d)$, hence $\varphi$ is semi-concave (Proposition 2.43 in \cite{villani2003topics}) and under condition (iii) of Lemma 2.42 in \cite{villani2003topics}, $\frac 12 \|\cdot\|_2^2 - \varphi$ is convex, and we have therefore recovered Brenier's theorem.
+$\bullet$ With $h:z\mapsto \frac 12 \|z\|_2^2$, $T(x) = x - \nabla \varphi(x)=\nabla(\frac 12 \|\cdot\|_2^2 - \varphi)$. In this case, $h\in \mathcal C_{\text{loc}}^{1,1}(\mathbb R^d)$, hence $\varphi$ is semi-concave (Proposition 2.43 in \cite{villani2003topics}) and under condition (iii) of Lemma 2.42 in \cite{villani2003topics}, $\frac 12 \|\cdot\|_2^2 - \varphi$ is convex, and we have therefore recovered Brenier's theorem.
 \end{rem}
 
 
@@ -172,7 +172,7 @@ It is shown in \cite{villani2003topics} that $W_p$ is a metric on the space $\ma
 
 The choice of $p$ is of much importance in practice. While $p=2$ is easier to deal with computationally, $p=1$ yields special properties.
 \begin{prop}
-If $c$ is a distance, then $\varphi$ is $c$-concave iff $\lip \varphi \leq 1$. Moreover, $\lip \varphi \leq 1 \implies \varphi^c = -\varphi$.
+If $c$ is a metric $D$, then $\varphi$ is $c$-concave iff $\lip \varphi \leq 1$. Moreover, $\lip \varphi \leq 1 \implies \varphi^c = -\varphi$.
 \end{prop}
 
 \begin{proof}
